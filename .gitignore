@@ -1,6 +1,5 @@
 # Ignore virtual environment
 venv/
-results/
 *.pyc
 
 # Ignore VS Code IDE settings

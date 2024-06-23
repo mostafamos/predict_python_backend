@@ -1,0 +1,11 @@
+text,predicted_label,predicted_department
+database connection issues,0,data
+firewall configuration problem,1,infra
+network latency affecting all servers,1,infra
+data extraction errors from database,0,data
+VPN access not working for remote employees,1,infra
+database schema mismatch,0,data
+security breach detected in the network,1,infra
+inconsistent data across multiple databases,0,data
+Pipeline expired,2,engineering
+out of memory,2,engineering

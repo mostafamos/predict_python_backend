@@ -1,0 +1,37 @@
+database connection issues,0
+data extraction errors from database,0
+database schema mismatch,0
+There was a failure in the data extraction process from the primary database.,0
+The database connection timed out due to high latency.,0
+Inconsistent data entries were found across multiple databases.,0
+Data schema mismatch error detected during the migration.,0
+Error encountered while writing data to the database cant insert data into database.,0
+Data backup failed due to insufficient storage.,0
+Database query taking too long to execute.,0
+Incorrect data format received from client.,0
+firewall configuration problem,1
+network latency affecting all servers,1
+VPN access not working for remote employees,1
+security breach detected in the network,1
+The firewall configuration is blocking incoming traffic on port 443.,1
+Network latency issues are affecting server performance.,1
+VPN access is not available for remote employees.,1
+A security breach was detected in the network infrastructure.,1
+Server hard disk failure detected.,1
+Disk quota exceeded error.,1
+Permission denied while accessing the file system.,1
+High CPU usage affecting application performance.,1
+Network switch failure causing connectivity issues.,1
+Firmware update failed on network device.,1
+out of memory,2
+Pipeline expired,2
+Index out of bound.,2
+Variable not defined.,2
+Semantic error.,2
+Operand doesn’t match operator.,2
+Unresponsive script causing application to hang.,2
+Failed to compile source code.,2
+Syntax error in the configuration file.,2
+Software dependency not found.,2
+Insufficient memory for process execution.,2
+Concurrent modification exception.,2

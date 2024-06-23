@@ -4,7 +4,6 @@ venv/
 
 # Ignore VS Code IDE settings
 .vscode/
-/node_modules
 /.pnp
 
 

@@ -3,7 +3,8 @@ from flask import Flask, request, jsonify
 import pandas as pd
 from transformers import BertTokenizer, BertForSequenceClassification
 from flask_cors import CORS
-
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
@@ -43,4 +44,11 @@ def predict():
     return jsonify(results)
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=8000, debug=True)
+    # Determine the host based on environment
+    if 'HOST' in os.environ:
+        host = os.environ['HOST']
+    else:
+        host = 'localhost'
+    print(f"HOST environment variable: {host}")
+    # Use the determined host and a fixed port (8000 for local testing)
+    app.run(host=host, port=8000)

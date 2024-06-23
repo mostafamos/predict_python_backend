@@ -14,8 +14,9 @@ function App() {
       alert('Please enter text to classify.');
       return;
     }
+    let apiUrl = process.env.HOST ? `${process.env.HOST}/predict` : 'http://localhost:8000/predict';
 
-    const response = await fetch('http://localhost:8000/predict', {
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

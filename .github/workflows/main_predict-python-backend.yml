@@ -1,3 +1,7 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
+
 name: Build and deploy Python app to Azure Web App - Predict-python-backend
 
 on:
@@ -17,10 +21,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.12'
-
-      - name: Upgrade pip
-        run: |
-          python -m pip install --upgrade pip
 
       - name: Create and start virtual environment
         run: |
@@ -49,9 +49,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
@@ -61,16 +59,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D118299942094C78B648ED8D5211DC48 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_04503A721743459E81C5535F67CAC5D1 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A9F6096B8D914EE0A32BE068DC1F2178 }}
-
+      
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'Predict-python-backend'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5D51223EFA964EB4A36C0C1A80178FC3 }}

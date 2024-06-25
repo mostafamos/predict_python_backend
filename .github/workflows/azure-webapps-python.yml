@@ -64,4 +64,3 @@ jobs:
         with:
           app-name: 'Predict-python-backend'
           slot-name: 'Production'
-          

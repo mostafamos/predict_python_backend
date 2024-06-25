@@ -11,13 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out the code from the GitHub repository
       - uses: actions/checkout@v4
 
+      # Set up the Python version to use
       - name: Set up Python version
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
+      # Create and activate a virtual environment, upgrade pip, and install dependencies
       - name: Create and start virtual environment
         run: |
           python -m venv venv
@@ -25,12 +28,15 @@ jobs:
       
       - name: Install dependencies
         run: |
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Package the application into a zip file for deployment
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
+      # Upload the zip file as an artifact for the deploy job to use
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
@@ -46,24 +52,29 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
+      # Download the artifact from the build job
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: python-app
 
+      # Unzip the downloaded artifact
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      # Log in to Azure using the credentials stored as GitHub secrets
       - name: Login to Azure
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
+      # Deploy the application to Azure Web App named 'Predict-python-backend'
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp

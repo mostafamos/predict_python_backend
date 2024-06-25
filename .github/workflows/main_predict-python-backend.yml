@@ -1,7 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
 name: Build and deploy Python app to Azure Web App - Predict-python-backend
 
 on:
@@ -15,28 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Check out the code from the GitHub repository
+      - uses: actions/checkout@v2
 
+      # Set up the Python version to use
       - name: Set up Python version
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: '3.12'
 
+      # Create and activate a virtual environment, upgrade pip, and install dependencies
       - name: Create and start virtual environment
         run: |
           python -m venv venv
           source venv/bin/activate
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
+      # Package the application into a zip file for deployment
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
+      # Upload the zip file as an artifact for the deploy job to use
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: python-app
           path: |
@@ -49,21 +51,23 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write # This is required for requesting the JWT
+
     steps:
+      # Download the artifact from the build job
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: python-app
 
+      # Unzip the downloaded artifact
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
-      - name: 'Deploy to Azure Web App'
+      # Deploy to Azure Web App using publish profile
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
         with:
           app-name: 'Predict-python-backend'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5D51223EFA964EB4A36C0C1A80178FC3 }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}

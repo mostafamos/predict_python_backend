@@ -38,12 +38,6 @@ jobs:
       id-token: write # This is required for requesting the JWT
 
     steps:
-      # Clean up before deployment
-
-
-      # Unzip the downloaded artifact
-      - name: Unzip artifact for deployment
-        run: unzip -o release.zip
 
       # Log in to Azure using Azure CLI with service principal credentials
       - name: Azure CLI Login

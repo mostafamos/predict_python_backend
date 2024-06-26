@@ -1,4 +1,4 @@
-name: Install Dependencies for predict-python-app
+name: Install Dependencies for predict_python_backend
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       app-service:
         description: 'Azure App Service to install dependencies for'
         required: true
-        default: 'predict-python-app'  # Default value, replace with your Azure App Service name
+        default: 'Predict-python-backend'  # Updated to use the correct Azure App Service name
 
 jobs:
   install-dependencies:
@@ -22,16 +22,14 @@ jobs:
         with:
           python-version: '3.x'  # Replace with your Python version
 
-      # Step 2: Check out repository (optional, depending on your setup)
+      # Step 2: Check out repository
       - name: Checkout repository
         uses: actions/checkout@v2
       
-      # Step 3: Install Python dependencies
-      - name: Install Python dependencies
+      # Step 3: Create and start virtual environment, then install dependencies
+      - name: Create and start virtual environment
         run: |
-          cd site/wwwroot  # Navigate to the directory where requirements.txt is located
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Install dependencies from requirements.txt
-
-      # Optional Steps:
-      # You can add additional steps here as needed for your deployment or configuration
+          pip install -r site/wwwroot/requirements.txt  # Adjust path if necessary

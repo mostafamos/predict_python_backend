@@ -1,0 +1,32 @@
+name: Push to FTP
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code from the GitHub repository
+      - uses: actions/checkout@v2
+
+      # Install lftp for FTP operations
+      - name: Install lftp
+        run: sudo apt-get install lftp
+
+      # Upload files to FTP server
+      - name: Upload to FTP
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          lftp -e "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R results /site/wwwroot; quit"
+
+      # Optional: Clean up artifacts or sensitive files
+      - name: Clean up
+        run: rm -rf results

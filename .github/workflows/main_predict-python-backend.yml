@@ -77,6 +77,9 @@ jobs:
       - name: Clean up after login
         run: |
           rm -f release.zip
+      - name: Clean up 'results' folder
+        run: |
+          rm -rf results  # Remove the 'results' folder before deployment
 
       # Deploy to Azure Web App using Azure Web Apps Deploy action
       - name: Deploy to Azure Web App

@@ -11,10 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Check disk space
-      - name: Check Disk Space
-        run: df -h
-
       # Check out the code from the GitHub repository
       - uses: actions/checkout@v2
 
@@ -46,6 +42,11 @@ jobs:
         with:
           name: python-app
           path: release.zip
+
+      # Clean up: Remove temporary files
+      - name: Clean up
+        run: |
+          rm -f release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -82,3 +83,8 @@ jobs:
         with:
           app-name: 'Predict-python-backend'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+      # Clean up: Remove artifact after deployment
+      - name: Clean up
+        run: |
+          rm -f release.zip

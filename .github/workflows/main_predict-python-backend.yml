@@ -25,10 +25,6 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
-      - name: Install dependencies
-        run: |
-          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -43,11 +39,6 @@ jobs:
           name: python-app
           path: release.zip
 
-      # Clean up: Remove temporary files
-      - name: Clean up
-        run: |
-          rm -f release.zip
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -58,6 +49,11 @@ jobs:
       id-token: write # This is required for requesting the JWT
 
     steps:
+      # Clean up before deployment
+      - name: Clean up before deployment
+        run: |
+          rm -f release.zip
+
       # Download the artifact from the build job
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -77,14 +73,14 @@ jobs:
         run: |
           az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
 
+      # Clean up after login
+      - name: Clean up after login
+        run: |
+          rm -f release.zip
+
       # Deploy to Azure Web App using Azure Web Apps Deploy action
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'Predict-python-backend'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-
-      # Clean up: Remove artifact after deployment
-      - name: Clean up
-        run: |
-          rm -f release.zip

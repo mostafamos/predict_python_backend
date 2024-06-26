@@ -25,4 +25,4 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
         run: |
-          lftp -e "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --exclude results . /site/wwwroot; quit"
+          lftp -e "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --exclude-glob results --exclude-glob .git --exclude-glob .github --exclude-glob '*.zip' /home/runner/work/predict_python_backend/venv /site/wwwroot; quit"

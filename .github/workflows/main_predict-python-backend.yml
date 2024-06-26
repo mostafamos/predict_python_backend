@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check disk space
+      - name: Check Disk Space
+        run: df -h
+
       # Check out the code from the GitHub repository
       - uses: actions/checkout@v2
 

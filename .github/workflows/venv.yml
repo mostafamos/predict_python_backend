@@ -1,4 +1,4 @@
-name: Install Dependencies for predict-python-app
+name: Install Dependencies for Predict-python-backend
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       app-service:
         description: 'Azure App Service to install dependencies for'
         required: true
-        default: 'predict-python-app'  # Default value, replace with your Azure App Service name
+        default: 'Predict-python-backend'  # Default value, replace with your Azure App Service name
 
 jobs:
   install-dependencies:

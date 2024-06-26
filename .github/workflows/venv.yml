@@ -1,61 +1,40 @@
-name: Build and deploy Python app to Azure Web App - Predict-python-backend
+name: Install Dependencies for predict-python-app
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      app-service:
+        description: 'Azure App Service to install dependencies for'
+        required: true
+        default: 'predict-python-app'  # Default value, replace with your Azure App Service name
 
 jobs:
-  build:
+  install-dependencies:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # Check out the code from the GitHub repository
-      - uses: actions/checkout@v2
-
-      # Set up the Python version to use
-      - name: Set up Python version
+      # Step 1: Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'
+          python-version: '3.x'  # Replace with your Python version
 
-      # Create and activate a virtual environment, upgrade pip, and install dependencies
-      - name: Create and start virtual environment
+      # Step 2: Install Python dependencies
+      - name: Install Python dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Adjust path if necessary
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write # This is required for requesting the JWT
+      # Step 3: Log in to Azure (Optional if Azure CLI is required)
+      #- name: Azure Login
+      #  uses: azure/login@v1
+      #  with:
+      #    creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    steps:
-
-      # Log in to Azure using Azure CLI with service principal credentials
-      - name: Azure CLI Login
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: |
-          az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-
-      # Clean up after login
-      - name: Clean up after login
-        run: |
-          rm -f release.zip
-
-      # Deploy to Azure Web App using Azure Web Apps Deploy action
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'Predict-python-backend'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      # Step 4: Configure Azure App Service Application Settings (Optional)
+      #- name: Configure Azure App Service Application Settings
+      #  run: |
+      #    az webapp config appsettings set --name ${{ github.event.inputs.app-service }} --resource-group your-resource-group --settings WEBSITE_RUN_FROM_PACKAGE=1

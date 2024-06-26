@@ -1,4 +1,4 @@
-name: Push venv to FTP
+name: Install Dependencies
 
 on:
   push:
@@ -7,23 +7,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  install-dependencies:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # Check out the code from the GitHub repository
-      - uses: actions/checkout@v2
-
-      # Install lftp for FTP operations
-      - name: Install lftp
-        run: sudo apt-get install lftp
-
-      # Upload venv directory to FTP server, excluding specific directories
-      - name: Upload venv to FTP
-        env:
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      # Step 2: Set up Python (example setup)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Replace with your Python version
+      
+      # Step 3: Install Python dependencies
+      - name: Install Python dependencies
         run: |
-          # Mirror venv directory excluding specific files/directories
-          lftp -e "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --exclude-glob results --exclude-glob .git --exclude-glob .github --exclude-glob '*.zip' ./venv /site/wwwroot; quit"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Replace with your requirements file
+
+      # Step 4: (Optional) Install Node.js dependencies
+      # Uncomment if you have Node.js dependencies to install
+      - name: Install Node.js dependencies
+        uses: actions/setup-node@v2
+        with:
+           node-version: '14'
+      - run: npm install  # Replace with your npm commands if needed
